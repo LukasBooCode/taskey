@@ -9,7 +9,8 @@ class Kernel
     }
     public function handle(Request $request): Response
     {
-        $response = new Response($request->path);
+        $response = new Response();
+        $response->body = "Thank you for your request! You requested: " . $request->path;
         return $response;
     }
 }

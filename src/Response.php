@@ -5,23 +5,27 @@ namespace Framework;
 class Response
 {
     public int $responseCode;
-    public ?string $body;
-    public string $headers;
+    public string $body;
+    public ?string $header;
 
     /**
      * @param int $responseCode
-     * @param string $headers
-     * @param string|null $body
+     * @param string|null $header
+     * @param string $body
      */
-    public function __construct(string $headers, int $responseCode = 200, ?string $body = null)
+    public function __construct(string $body = "", int $responseCode = 200, ?string $header = null)
     {
-        $this->headers = $headers;
+        $this->header = $header;
         $this->responseCode = $responseCode;
         $this->body = $body;
     }
 
     public function echo(): void
     {
-        echo "Thank you for your request at " . $this->headers;
+        if ($this->header !== null) {
+            header($this->header);
+        }
+        http_response_code($this->responseCode);
+        echo $this->body;
     }
 }
