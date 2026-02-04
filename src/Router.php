@@ -12,12 +12,18 @@ class Router
 
     public function dispatch(Request $request): Response
     {
+        $matchedRoute = null;
         foreach ($this->routes as $route) {
             if ($route->matches($request->method, $request->path)) {
-                return new Response($route->return);
+                $matchedRoute = $route;
+                break;
             }
         }
-        return new Response("Page not found", 404);
+        if ($matchedRoute === null) {
+            return new Response("Page not found", 404);
+        }
+
+        return new Response($matchedRoute->return);
     }
 
     public function addRoute(string $method, string $path, string $return): void
