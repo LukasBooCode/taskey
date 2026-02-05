@@ -1,24 +1,18 @@
 <?php
 
-# Playground
-$awesomeStyle = "style=\"color: red; font-weight: 900; font-size: 32px\"";
-# Playground end
-
 // Autoload dependencies and classes
 require __DIR__ . '/../vendor/autoload.php';
 
 use Framework\Request;
 use Framework\Kernel;
+use App\RouteProvider;
 
 // Initialize the kernel
 $kernel = new Kernel();
 
-//Fetch the router object instantiated by the kernel.
-$router = $kernel->getRouter();
-
 //Create routes.
-$router->addRoute("GET", "/", "Welcome to Taskey");
-$router->addRoute("GET", "/about", "Taskey is <div {$awesomeStyle}>Awesome</div>");
+$routeProvider = new RouteProvider();
+$kernel->registerRoutes($routeProvider);
 
 // Extract the path from the URL
 $urlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
