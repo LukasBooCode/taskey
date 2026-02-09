@@ -5,12 +5,17 @@ require __DIR__ . '/../vendor/autoload.php';
 
 use Framework\Request;
 use Framework\Kernel;
+use App\ServiceProvider;
 use App\RouteProvider;
 
 // Initialize the kernel
 $kernel = new Kernel();
 
-//Create routes.
+//Register services
+$serviceProvider = new ServiceProvider();
+$kernel->registerServices($serviceProvider);
+
+//Create routes.s
 $routeProvider = new RouteProvider();
 $kernel->registerRoutes($routeProvider);
 
