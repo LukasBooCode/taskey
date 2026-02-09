@@ -23,7 +23,7 @@ class Router
             return new Response("Page not found", 404);
         }
         $callback = $matchedRoute->callback;
-        $response = $callback();
+        $response = $callback(); //To clarify: the callback returns a Response object with a string inside the body.
         return $response;
     }
 
