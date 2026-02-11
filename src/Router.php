@@ -4,10 +4,12 @@ namespace Framework;
 
 class Router
 {
+    public ResponseFactory $responseFactory;
     /** @var Route[] */
     public array $routes;
-    public function __construct()
+    public function __construct(ResponseFactory $responseFactory)
     {
+        $this->responseFactory = $responseFactory;
     }
 
     public function dispatch(Request $request): Response
@@ -20,7 +22,7 @@ class Router
             }
         }
         if ($matchedRoute === null) {
-            return new Response("Page not found", 404);
+            return $this->responseFactory->notFound();
         }
         $callback = $matchedRoute->callback;
         $response = $callback(); //To clarify: the callback returns a Response object with a string inside the body.
