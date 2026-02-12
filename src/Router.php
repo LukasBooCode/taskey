@@ -4,33 +4,47 @@ namespace Framework;
 
 class Router
 {
-    public ResponseFactory $responseFactory;
+    private ResponseFactory $responseFactory;
+
     /** @var Route[] */
-    public array $routes;
+    private array $routes = [];
+
     public function __construct(ResponseFactory $responseFactory)
     {
         $this->responseFactory = $responseFactory;
     }
 
+    /**
+     * Dispatch the Request to the appropriate route and return a Response.
+     *
+     * @param Request $request
+     * @return Response
+     */
     public function dispatch(Request $request): Response
     {
-        $matchedRoute = null;
         foreach ($this->routes as $route) {
             if ($route->matches($request->method, $request->path)) {
-                $matchedRoute = $route;
-                break;
+                $callback = $route->callback;
+                $response = $callback();
+                return $response;
             }
         }
-        if ($matchedRoute === null) {
-            return $this->responseFactory->notFound();
-        }
-        $callback = $matchedRoute->callback;
-        $response = $callback(); //To clarify: the callback returns a Response object with a string inside the body.
-        return $response;
+
+        // No matching route found, return a 404 response
+        return $this->responseFactory->notFound();
     }
 
+    /**
+     * Add a new route to the router.
+     *
+     * @param string $method HTTP method
+     * @param string $path URL path
+     * @param callable $callback Callback function to handle the route
+     * @return void
+     */
     public function addRoute(string $method, string $path, callable $callback): void
     {
-        $this->routes[] = new Route($method, $path, $callback);
+        $route = new Route($method, $path, $callback);
+        $this->routes[] = $route;
     }
 }

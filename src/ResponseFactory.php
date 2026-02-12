@@ -4,14 +4,19 @@ namespace Framework;
 
 class ResponseFactory
 {
-    public function body(string $text): Response
+    public function body(string $body): Response
     {
-        $response = new Response($text);
+        $response = new Response();
+        $response->responseCode = 200;
+        $response->body = $body;
         return $response;
     }
+
     public function notFound(): Response
     {
-        $response = new Response("Page not found", 404);
+        $response = new Response();
+        $response->responseCode = 404;
+        $response->body = "Page not found.";
         return $response;
     }
 }

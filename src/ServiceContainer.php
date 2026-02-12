@@ -12,11 +12,14 @@ class ServiceContainer
     /**
      * @template T of object
      * @param class-string<T> $id
-     * @param object $instance
+     * @param T $instance
      * @throws Exception
      */
     public function set(string $id, object $instance): void
     {
+        if (!$instance instanceof $id) {
+            throw new Exception("Instance must be of type [$id].");
+        }
         if (isset($this->instances[$id])) {
             throw new Exception("Target binding [$id] already exists.");
         }
@@ -34,6 +37,7 @@ class ServiceContainer
         if (!isset($this->instances[$id])) {
             throw new Exception("Target binding [$id] does not exist.");
         }
+
         /** @var T */
         return $this->instances[$id];
     }

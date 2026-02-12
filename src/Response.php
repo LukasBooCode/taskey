@@ -4,22 +4,22 @@ namespace Framework;
 
 class Response
 {
-    public int $responseCode;
+    public int $responseCode = 200;
+
     public string $body;
+
     public ?string $header;
 
-    /**
-     * @param int $responseCode
-     * @param string|null $header
-     * @param string $body
-     */
     public function __construct(string $body = "", int $responseCode = 200, ?string $header = null)
     {
-        $this->header = $header;
-        $this->responseCode = $responseCode;
         $this->body = $body;
+        $this->responseCode = $responseCode;
+        $this->header = $header;
     }
 
+    /**
+     * Send the response to the client.
+     */
     public function echo(): void
     {
         if ($this->header !== null) {

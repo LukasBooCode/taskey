@@ -3,21 +3,20 @@
 // Autoload dependencies and classes
 require __DIR__ . '/../vendor/autoload.php';
 
-use Framework\Request;
-use Framework\Kernel;
-use App\ServiceProvider;
 use App\RouteProvider;
+use App\ServiceProvider;
+use Framework\Kernel;
+use Framework\Request;
 
-// Initialize the kernel
+// Initialize the Kernel
 $kernel = new Kernel();
 
-//Register services
-$serviceProvider = new ServiceProvider();
-$kernel->registerServices($serviceProvider);
+$kernel->registerServices(new ServiceProvider());
+// Define routes
+$kernel->registerRoutes(new RouteProvider());
 
-//Create routes.s
-$routeProvider = new RouteProvider();
-$kernel->registerRoutes($routeProvider);
+// Get Request data from the global variables
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 // Extract the path from the URL
 $urlPath = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -25,8 +24,14 @@ if (!is_string($urlPath)) {
     $urlPath = '/';
 }
 
+// Get query (GET) parameters
+$queryParams = $_GET;
+
+// Get POST data
+$postData = $_POST;
+
 // Create the Request object
-$request = new Request($_SERVER['REQUEST_METHOD'], $urlPath, $_GET, $_POST);
+$request = new Request($method, $urlPath, $queryParams, $postData);
 
 // Handle the request and get the response
 $response = $kernel->handle($request);

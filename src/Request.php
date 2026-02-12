@@ -5,11 +5,14 @@ namespace Framework;
 class Request
 {
     public string $method;
+
     public string $path;
-    /** @var string[] */
-    public array $queryParameters;
+
     /** @var string[] */
     public array $postParameters;
+
+    /** @var string[] */
+    public array $queryParameters;
 
     /**
      * @param string $method
