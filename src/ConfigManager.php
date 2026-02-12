@@ -4,5 +4,4 @@ namespace Framework;
 
 class ConfigManager
 {
-
 }
