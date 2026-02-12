@@ -5,11 +5,11 @@ namespace Framework;
 class ResponseFactory
 {
     private \Twig\Environment $twig;
-    public function __construct()
+    public function __construct(string $debugMode, string $viewsPath)
     {
-        $loader = new \Twig\Loader\FilesystemLoader('../app/views/');
+        $loader = new \Twig\Loader\FilesystemLoader($viewsPath);
         $this->twig = new \Twig\Environment($loader, [
-            'debug' => true
+            'debug' => $debugMode
         ]);
     }
     public function body(string $body): Response

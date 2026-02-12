@@ -2,20 +2,28 @@
 
 namespace Framework;
 
+use PHP_CodeSniffer\Config;
+
 class Kernel
 {
     private Router $router;
 
     private ServiceContainer $container;
+    private ConfigManager $configManager;
 
     /**
+     * @param string[] $config
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct(array $config)
     {
         $this->container = new ServiceContainer();
 
-        $responseFactory = new ResponseFactory();
+        $configManager = new ConfigManager($config);
+        $debugMode = $configManager->get('APP_ENV');
+        $viewsPath = $configManager->get('VIEWS_PATH');
+
+        $responseFactory = new ResponseFactory($debugMode, $viewsPath);
         $this->container->set(ResponseFactory::class, $responseFactory);
 
         $this->router = new Router($responseFactory);
