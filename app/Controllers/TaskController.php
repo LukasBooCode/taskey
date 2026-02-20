@@ -16,11 +16,11 @@ class TaskController
 
     public function index(): Response
     {
-        return $this->responseFactory->view('tasks/index.html.twig', []);
+        return $this->responseFactory->view("tasks/index.html.twig");
     }
 
     public function create(): Response
     {
-        return $this->responseFactory->view('tasks/create.html.twig', []);
+        return $this->responseFactory->view("tasks/create.html.twig");
     }
 }

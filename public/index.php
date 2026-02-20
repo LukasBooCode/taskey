@@ -8,14 +8,8 @@ use App\ServiceProvider;
 use Framework\Kernel;
 use Framework\Request;
 
-//Create configs for the kernel
-$config = [
-    'APP_ENV' => 'true',
-    'VIEWS_PATH' => '../app/views'
-];
-
 // Initialize the Kernel
-$kernel = new Kernel($config);
+$kernel = new Kernel();
 
 $kernel->registerServices(new ServiceProvider());
 // Define routes

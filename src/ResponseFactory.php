@@ -5,33 +5,47 @@ namespace Framework;
 class ResponseFactory
 {
     private \Twig\Environment $twig;
-    public function __construct(string $debugMode, string $viewsPath)
+
+    public function __construct()
     {
-        $loader = new \Twig\Loader\FilesystemLoader($viewsPath);
-        $this->twig = new \Twig\Environment($loader, [
-            'debug' => $debugMode
+        $loader = new \Twig\Loader\FilesystemLoader('../app/views/');
+        $twig = new \Twig\Environment($loader, [
+            'debug' => true
         ]);
+        $this->twig = $twig;
     }
-    public function body(string $body): Response
+
+    /**
+     * @param string $view
+     * @param array<mixed> $parameters
+     * @return Response
+     */
+    public function view(string $view, mixed $parameters = []): Response
     {
         $response = new Response();
-        $response->responseCode = 200;
-        $response->body = $body;
-        return $response;
-    }
-    public function view(string $template, mixed $parameters): Response
-    {
-        $response = new Response();
-        $response->responseCode = 200;
-        $response->body = $this->twig->render($template, $parameters);
-        return $response;
+
+        try {
+            $response->responseCode = 200;
+            $response->body = $this->twig->render($view, $parameters);
+            return $response;
+        } catch (\Exception $e) {
+            $response->responseCode = 500;
+            $response->body = $e->getMessage();
+            return $response;
+        }
     }
 
     public function notFound(): Response
     {
         $response = new Response();
-        $response->responseCode = 404;
-        $response->body = $this->twig->render('404.html.twig', []);
-        return $response;
+        try {
+            $response->responseCode = 404;
+            $response->body = $this->twig->render('404.html.twig');
+            return $response;
+        } catch (\Exception $e) {
+            $response->responseCode = 500;
+            $response->body = $e->getMessage();
+            return $response;
+        }
     }
 }

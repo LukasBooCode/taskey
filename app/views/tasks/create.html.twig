@@ -1,5 +1,8 @@
-{% extends "base/base.html.twig" %}
+{% extends "partials/base.html.twig" %}
 
-{% set title = 'Create' %}
-{% set header = 'Create page' %}
-{% set content = "You made it to the Create page!" %}
+{% set pageTitle = "Tasks" %}
+
+{% block content %}
+    <h2>Tasks</h2>
+    <p>Create new task</p>
+{% endblock %}

@@ -16,11 +16,11 @@ class HomeController
 
     public function index(): Response
     {
-        return $this->responseFactory->view('index.html.twig', []);
+        return $this->responseFactory->view("index.html.twig");
     }
 
     public function about(): Response
     {
-        return $this->responseFactory->view('about.html.twig', []);
+        return $this->responseFactory->view("about.html.twig");
     }
 }

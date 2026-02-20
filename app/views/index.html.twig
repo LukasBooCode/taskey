@@ -1,5 +1,8 @@
-{% extends "base/base.html.twig" %}
+{% extends "partials/base.html.twig" %}
 
-{% set title = 'Home' %}
-{% set header = 'Index page' %}
-{% set content = "You made it to the home page!" %}
+{% set pageTitle = "Home" %}
+
+{% block content %}
+    <h1>Home</h1>
+    <p>Welcome to Taskey!</p>
+{% endblock %}

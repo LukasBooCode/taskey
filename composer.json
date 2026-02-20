@@ -10,7 +10,7 @@
     },
     "require": {
         "php": "^8.2",
-        "twig/twig": "^3.23"
+        "twig/twig": "^3.21"
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
