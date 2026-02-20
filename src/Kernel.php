@@ -8,14 +8,21 @@ class Kernel
 
     private ServiceContainer $container;
 
+    private ConfigManager $configManager;
+
     /**
+     * @param string[] $config
      * @throws \Exception
      */
-    public function __construct()
+    public function __construct(array $config)
     {
         $this->container = new ServiceContainer();
 
-        $responseFactory = new ResponseFactory();
+        $this->configManager = new ConfigManager($config);
+
+        $debugMode = $this->configManager->get('APP_ENV') != 'production';
+        $viewsPath = $this->configManager->get('VIEWS_PATH');
+        $responseFactory = new ResponseFactory($debugMode, $viewsPath);
         $this->container->set(ResponseFactory::class, $responseFactory);
 
         $this->router = new Router($responseFactory);

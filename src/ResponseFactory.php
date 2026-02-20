@@ -6,12 +6,15 @@ class ResponseFactory
 {
     private \Twig\Environment $twig;
 
-    public function __construct()
+    public function __construct(bool $debugMode, string $viewsPath)
     {
-        $loader = new \Twig\Loader\FilesystemLoader('../app/views/');
+        $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../' . $viewsPath);
         $twig = new \Twig\Environment($loader, [
-            'debug' => true
+            'debug' => $debugMode
         ]);
+        if ($debugMode) {
+            $twig->addExtension(new \Twig\Extension\DebugExtension());
+        }
         $this->twig = $twig;
     }
 
