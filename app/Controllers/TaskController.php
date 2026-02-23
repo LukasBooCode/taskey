@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use Framework\Request;
 use Framework\Response;
 use Framework\ResponseFactory;
 
@@ -22,5 +23,12 @@ class TaskController
     public function create(): Response
     {
         return $this->responseFactory->view("tasks/create.html.twig");
+    }
+    public function show(Request $request): Response
+    {
+        $id = $request->get('id');
+        return $this->responseFactory->view("tasks/show.html.twig", [
+            'id' => $id
+        ]);
     }
 }

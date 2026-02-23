@@ -11,6 +11,9 @@ class Route
     /** @var callable */
     public $callback;
 
+    /** @var string[] */
+    public array $routeParameters;
+
     /**
      * @param string $method
      * @param string $path
@@ -29,6 +32,12 @@ class Route
             return false;
         }
 
-        return $path === $this->path;
+        $pattern =  ';^' . $this->path . '/?$;';
+        if (preg_match($pattern, $path, $matches)) {
+            $this->routeParameters = $matches;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
