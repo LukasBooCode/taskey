@@ -15,7 +15,7 @@ class Request
     public array $queryParameters;
 
     /** @var string[] */
-    public array $routeParameters;
+    public array $routeParameters = [];
 
     /**
      * @param string $method
@@ -31,7 +31,7 @@ class Request
         $this->postParameters = $postParameters;
     }
 
-    public function get(string $key): string | null
+    public function get(string $key): ?string
     {
         return $this->routeParameters[$key] ?? null;
     }
