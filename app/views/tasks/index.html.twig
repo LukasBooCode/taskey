@@ -5,5 +5,13 @@
 {% block content %}
     <h2>Tasks</h2>
     <p>List all tasks</p>
+    {% for task in tasks %}
+        <div style="border: 2px solid black; padding: 2em; text-align: center;">
+            {% for attribute in task %}
+                <p style="border-bottom: 1px solid grey;">{{ attribute }}</p>
+            {% endfor %}
+            <a href="tasks/{{ task.id }}">Link</a>
+        </div>
+    {% endfor %}
     <p><a href="/tasks/create">Create a New Task</a></p>
 {% endblock %}

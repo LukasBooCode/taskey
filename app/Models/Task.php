@@ -11,7 +11,7 @@ class Task
     public int $status;
     public int $progress;
     public int $createdAt;
-    public int $completedAt;
+    public int|null $completedAt;
     public function __construct()
     {
     }

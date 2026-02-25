@@ -4,5 +4,14 @@
 
 {% block content %}
     <h2>Tasks</h2>
-    <p>Task #{{ id }}</p>
+    <div style="border: 2px solid black; padding: 2em; text-align: center;">
+        <p style="border-bottom: 1px solid grey;">Id: {{ task.id }}</p>
+        <p style="border-bottom: 1px solid grey;">Title: {{ task.title }}</p>
+        <p style="border-bottom: 1px solid grey;">Description: {{ task.description }}</p>
+        <p style="border-bottom: 1px solid grey;">Priority: {{ task.priority }}</p>
+        <p style="border-bottom: 1px solid grey;">Status: {{ task.status }}</p>
+        <p style="border-bottom: 1px solid grey;">Progress: {{ task.progress }}</p>
+        <p style="border-bottom: 1px solid grey;">Created At: {{ task.createdAt }}</p>
+        <p style="border-bottom: 1px solid grey;">Completed At: {{ task.completedAt }}</p>
+    </div>
 {% endblock %}

@@ -35,6 +35,11 @@ class TaskController
     {
         $taskId = (int)$request->get('id');
         $task = $this->taskRepository->find($taskId);
+
+        if ($task === null) {
+            $task['id'] = $taskId;
+        }
+
         return $this->responseFactory->view("tasks/show.html.twig", [
             'task' => $task
         ]);
