@@ -10,6 +10,7 @@ use Framework\ResponseFactory;
 class TaskController
 {
     private ResponseFactory $responseFactory;
+
     private TaskRepositoryInterface $taskRepository;
 
     public function __construct(ResponseFactory $responseFactory, TaskRepositoryInterface $taskRepository)
@@ -21,9 +22,7 @@ class TaskController
     public function index(): Response
     {
         $tasks = $this->taskRepository->all();
-        return $this->responseFactory->view("tasks/index.html.twig", [
-            'tasks' => $tasks
-        ]);
+        return $this->responseFactory->view("tasks/index.html.twig", ["tasks" => $tasks]);
     }
 
     public function create(): Response
@@ -37,11 +36,8 @@ class TaskController
         $task = $this->taskRepository->find($taskId);
 
         if ($task === null) {
-            $task['id'] = $taskId;
+            return $this->responseFactory->notFound();
         }
-
-        return $this->responseFactory->view("tasks/show.html.twig", [
-            'task' => $task
-        ]);
+        return $this->responseFactory->view("tasks/show.html.twig", ["task" => $task]);
     }
 }

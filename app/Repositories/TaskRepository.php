@@ -38,30 +38,40 @@ class TaskRepository implements TaskRepositoryInterface
     );
 
     /**
-     * @return array<Task>
+     * @return Task[]
      */
     public function all(): array
     {
         $tasks = array();
-        foreach ($this->tempTasks as $task) {
+        foreach ($this->tempTasks as $tempElement) {
+            $task = new Task();
+            $task->id = $tempElement['id'];
+            $task->title = $tempElement['title'];
+            $task->description = $tempElement['description'];
+            $task->priority = $tempElement['priority'];
+            $task->status = $tempElement['status'];
+            $task->progress = $tempElement['progress'];
+            $task->createdAt = $tempElement['created_at'];
+            $task->completedAt = $tempElement['completed_at'];
             $tasks[] = $task;
         }
+
         return $tasks;
     }
 
     public function find(int $id): ?Task
     {
         $task = new Task();
-        foreach ($this->tempTasks as $singleTask) {
-            if ($id === $singleTask['id']) {
-                $task->id = $singleTask['id'];
-                $task->title = $singleTask['title'];
-                $task->description = $singleTask['description'];
-                $task->priority = $singleTask['priority'];
-                $task->status = $singleTask['status'];
-                $task->progress = $singleTask['progress'];
-                $task->createdAt = $singleTask['created_at'];
-                $task->completedAt = $singleTask['completed_at'];
+        foreach ($this->tempTasks as $tempElement) {
+            if ($tempElement['id'] === $id) {
+                $task->id = $tempElement['id'];
+                $task->title = $tempElement['title'];
+                $task->description = $tempElement['description'];
+                $task->priority = $tempElement['priority'];
+                $task->status = $tempElement['status'];
+                $task->progress = $tempElement['progress'];
+                $task->createdAt = $tempElement['created_at'];
+                $task->completedAt = $tempElement['completed_at'];
                 return $task;
             }
         }
