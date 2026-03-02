@@ -20,6 +20,7 @@ class ServiceProvider implements ServiceProviderInterface
     public function register(ServiceContainer $container): void
     {
         $responseFactory = $container->get(ResponseFactory::class);
+
         $database = $container->get(Database::class);
 
         $taskRepository = new TaskRepository($database);

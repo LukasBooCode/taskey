@@ -2,8 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Models\Task;
 use Framework\Database;
+use App\Models\Task;
+use PDO;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -19,42 +20,40 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function all(): array
     {
-        $tasks = array();
-        $data = $this->database->run("SELECT * FROM tasks ORDER BY tasks.title")->fetchAll();
-
-        foreach ($data as $row) {
-            $task = $this->createTaskFrom($row);
+        $stmt = $this->database->run("SELECT * FROM tasks ORDER BY title")->fetchAll(PDO::FETCH_OBJ);
+        $tasks = [];
+        foreach ($stmt as $row) {
+            $task = $this->fromDbRow($row);
             $tasks[] = $task;
         }
-
         return $tasks;
     }
 
     public function find(int $id): ?Task
     {
-        $row = $this->database->run("SELECT * FROM tasks WHERE id = :id", [
-            'id' => $id
-        ])->fetch();
-
-        if ($row['id'] === $id) {
-            $task = $this->createTaskFrom($row);
-            return $task;
+        $stmt = $this->database->run("SELECT * FROM tasks WHERE id = :id", ["id" => $id])->fetch(PDO::FETCH_OBJ);
+        if (!$stmt) {
+            return null;
         }
-        return null;
+        $task = $this->fromDbRow($stmt);
+        return $task;
     }
-    private function createTaskFrom(mixed $data): Task
+
+    /**
+     * @param mixed $row
+     * @return Task
+     */
+    private function fromDbRow(mixed $row): Task
     {
         $task = new Task();
-
-        $task->id = $data['id'];
-        $task->title = $data['title'];
-        $task->description = $data['description'];
-        $task->priority = $data['priority'];
-        $task->status = $data['status'];
-        $task->progress = $data['progress'];
-        $task->createdAt = $data['created_at'];
-        $task->completedAt = $data['completed_at'];
-
+        $task->id = $row->id;
+        $task->title = $row->title;
+        $task->description = $row->description;
+        $task->priority = $row->priority;
+        $task->status = $row->status;
+        $task->progress = $row->progress;
+        $task->createdAt = $row->created_at;
+        $task->completedAt = $row->completed_at;
         return $task;
     }
 }
