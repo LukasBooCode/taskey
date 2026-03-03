@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use Framework\Database;
 use App\Models\Task;
-use PDO;
 
 class TaskRepository implements TaskRepositoryInterface
 {
@@ -20,7 +19,7 @@ class TaskRepository implements TaskRepositoryInterface
      */
     public function all(): array
     {
-        $stmt = $this->database->run("SELECT * FROM tasks ORDER BY title")->fetchAll(PDO::FETCH_OBJ);
+        $stmt = $this->database->run("SELECT * FROM tasks ORDER BY title")->fetchAll();
         $tasks = [];
         foreach ($stmt as $row) {
             $task = $this->fromDbRow($row);
@@ -31,11 +30,34 @@ class TaskRepository implements TaskRepositoryInterface
 
     public function find(int $id): ?Task
     {
-        $stmt = $this->database->run("SELECT * FROM tasks WHERE id = :id", ["id" => $id])->fetch(PDO::FETCH_OBJ);
+        $stmt = $this->database->run("SELECT * FROM tasks WHERE id = :id", ["id" => $id])->fetch();
         if (!$stmt) {
             return null;
         }
         $task = $this->fromDbRow($stmt);
+        return $task;
+    }
+
+
+    public function insert(Task $task): Task|null
+    {
+        $stmt = $this->database->run(
+            "INSERT INTO tasks (title, description, priority, status, progress, created_at, completed_at) 
+                 VALUES (:title, :description, :priority, :status, :progress, :created_at, :completed_at)",
+            [
+                "title" => $task->title,
+                "description" => $task->description,
+                "priority" => $task->priority,
+                "status" => $task->status,
+                "progress" => $task->progress,
+                "created_at" => $task->createdAt,
+                "completed_at" => $task->completedAt
+            ]
+        );
+        if ($stmt->rowCount() === 0) {
+            return null;
+        }
+        $task->id = $this->database->getLastID();
         return $task;
     }
 
