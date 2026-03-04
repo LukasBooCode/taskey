@@ -55,5 +55,11 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer d-flex gap-2">
+            <a class="btn btn-primary" href="/tasks/{{ task.id }}/edit">Edit Task</a>
+            <form method="POST" action="/tasks/{{ task.id }}/delete">
+                <input type="submit" value="Delete Task" class="btn btn-warning">
+            </form>
+        </div>
     </div>
 {% endblock %}

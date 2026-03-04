@@ -93,4 +93,88 @@ class TaskController
         }
         return $this->responseFactory->view("tasks/show.html.twig", ["task" => $task]);
     }
+
+    public function edit(Request $request): Response
+    {
+        $taskId = (int)$request->get('id');
+        $task = $this->taskRepository->find($taskId);
+
+        if ($task === null) {
+            return $this->responseFactory->notFound();
+        }
+        return $this->responseFactory->view("tasks/edit.html.twig", ["task" => $task]);
+    }
+
+    public function update(Request $request): Response
+    {
+        $taskId = (int)$request->get('id');
+        $task = $this->taskRepository->find($taskId);
+
+        if ($task === null) {
+            return $this->responseFactory->notFound();
+        }
+
+        $title = $request->get('title');
+        $description = $request->get('description') ?? '';
+        $priority = $request->get('priority');
+        $status = $request->get('status');
+        $createdAt = $request->get('created_at');
+
+        $errors = [];
+        if ($title === null || trim($title) === '') {
+            $errors['title'] = "Title is required.";
+            $title = null;
+        }
+
+        if (!is_numeric($priority) || in_array((int)$priority, range(0, 3)) === false) {
+            $errors['priority'] = "Priority must be specified.";
+            $priority = null;
+        }
+
+        if (!is_numeric($status) || in_array((int)$status, range(0, 4)) === false) {
+            $errors['status'] = "Status must be specified.";
+            $status = null;
+        }
+
+        if ($createdAt !== null) {
+            $createdAt = DateTime::createFromFormat('Y-m-d', $createdAt);
+            if ($createdAt) {
+                $createdAt = $createdAt->getTimestamp();
+            } else {
+                $createdAt = time();
+            }
+        }
+
+        $task->title = $title ?? '';
+        $task->description = $description;
+        $task->priority = (int)$priority;
+        $task->status = (int)$status;
+        $task->createdAt = (int)$createdAt;
+
+        if (!empty($errors)) {
+            return $this->responseFactory->view("tasks/edit.html.twig", ["errors" => $errors, "task" => $task]);
+        }
+
+        $task = $this->taskRepository->update($task);
+        if ($task === false) {
+            return $this->responseFactory->internalError();
+        }
+        return $this->responseFactory->redirect('/tasks/' . $taskId);
+    }
+
+    public function delete(Request $request): Response
+    {
+        $taskId = (int)$request->get('id');
+        $task = $this->taskRepository->find($taskId);
+
+        if ($task === null) {
+            return $this->responseFactory->notFound();
+        }
+
+        $task = $this->taskRepository->delete($task);
+        if ($task === false) {
+            return $this->responseFactory->internalError();
+        }
+        return $this->responseFactory->redirect('/tasks');
+    }
 }
