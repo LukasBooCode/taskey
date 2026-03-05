@@ -4,6 +4,7 @@ namespace App;
 
 use App\Controllers\HomeController;
 use App\Controllers\TaskController;
+use App\Controllers\ProjectController;
 use Framework\Router;
 use Framework\RouteProviderInterface;
 use Framework\ServiceContainer;
@@ -28,5 +29,8 @@ class RouteProvider implements RouteProviderInterface
         $router->addRoute('POST', '/tasks/(?<id>\d+)/edit', [$taskController, 'update']);
         $router->addRoute('GET', '/tasks/(?<id>\d+)/delete', [$taskController, 'deleteConfirm']);
         $router->addRoute('POST', '/tasks/(?<id>\d+)/delete', [$taskController, 'delete']);
+
+        $projectController = $container->get(ProjectController::class);
+        $router->addRoute('GET', '/projects', [$projectController, 'index']);
     }
 }

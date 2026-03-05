@@ -6,7 +6,9 @@ CREATE TABLE tasks (
     status INTEGER,
     progress INTEGER,
     created_at INTEGER,
-    completed_at INTEGER
+    completed_at INTEGER,
+    project_id INTEGER,
+    FOREIGN KEY (project_id) REFERENCES projects(id)
 );
 INSERT INTO tasks (title, description, priority, status, progress, created_at, completed_at) VALUES
     ('Form the Fellowship', 'Assemble representatives of the Free Peoples in Rivendell', 1, 4, 100, strftime('%s', 'now', '-3 days'), strftime('%s', 'now')),
