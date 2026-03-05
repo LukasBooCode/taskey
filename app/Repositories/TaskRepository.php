@@ -61,6 +61,31 @@ class TaskRepository implements TaskRepositoryInterface
         return $task;
     }
 
+    public function update(Task $task): bool
+    {
+        $stmt = $this->database->run(
+            "UPDATE tasks SET title = :title,
+                description = :description,
+                priority = :priority,
+                status = :status,
+                progress = :progress,
+                created_at = :created_at,
+                completed_at = :completed_at
+             WHERE id = :id",
+            [
+                "id" => $task->id,
+                "title" => $task->title,
+                "description" => $task->description,
+                "priority" => $task->priority,
+                "status" => $task->status,
+                "progress" => $task->progress,
+                "created_at" => $task->createdAt,
+                "completed_at" => $task->completedAt
+            ]
+        );
+        return $stmt->rowCount() > 0;
+    }
+
     /**
      * @param mixed $row
      * @return Task
@@ -79,37 +104,10 @@ class TaskRepository implements TaskRepositoryInterface
         return $task;
     }
 
-    public function update(Task $task): bool
-    {
-        $this->database->run(
-            "UPDATE tasks
-            SET title = :title,
-            description = :description,
-            priority = :priority,
-            status = :status,
-            created_at = :created_at
-            WHERE id = :id",
-            [
-                'title' => $task->title,
-                'description' => $task->description,
-                'priority' => $task->priority,
-                'status' => $task->status,
-                'created_at' => $task->createdAt,
-                'id' => $task->id
-            ]
-        );
-
-        return true;
-    }
-
     public function delete(Task $task): bool
     {
-        $this->database->run(
-            "DELETE FROM tasks
-            WHERE id = :id",
-            ['id' => $task->id]
-        );
+        $stmt = $this->database->run("DELETE FROM tasks WHERE id = :id", ["id" => $task->id]);
 
-        return true;
+        return $stmt->rowCount() > 0;
     }
 }

@@ -24,8 +24,9 @@ class RouteProvider implements RouteProviderInterface
         $router->addRoute('GET', '/tasks/(?<id>\d+)', [$taskController, "show"]);
         $router->addRoute('GET', '/tasks/create', [$taskController, "create"]);
         $router->addRoute('POST', '/tasks', [$taskController, 'store']);
-        $router->addRoute('GET', '/tasks/(?<id>\d+)/edit', [$taskController, "edit"]);
-        $router->addRoute('POST', '/tasks/(?<id>\d+)/edit', [$taskController, "update"]);
-        $router->addRoute('POST', '/tasks/(?<id>\d+)/delete', [$taskController, "delete"]);
+        $router->addRoute('GET', '/tasks/(?<id>\d+)/edit', [$taskController, 'edit']);
+        $router->addRoute('POST', '/tasks/(?<id>\d+)/edit', [$taskController, 'update']);
+        $router->addRoute('GET', '/tasks/(?<id>\d+)/delete', [$taskController, 'deleteConfirm']);
+        $router->addRoute('POST', '/tasks/(?<id>\d+)/delete', [$taskController, 'delete']);
     }
 }

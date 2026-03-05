@@ -96,85 +96,65 @@ class TaskController
 
     public function edit(Request $request): Response
     {
-        $taskId = (int)$request->get('id');
-        $task = $this->taskRepository->find($taskId);
-
-        if ($task === null) {
-            return $this->responseFactory->notFound();
-        }
-        return $this->responseFactory->view("tasks/edit.html.twig", ["task" => $task]);
+        $id = (int)$request->get('id');
+        $task = $this->taskRepository->find($id);
+        return $this->responseFactory->view('tasks/edit.html.twig', [
+            'task' => $task
+        ]);
     }
 
     public function update(Request $request): Response
     {
-        $taskId = (int)$request->get('id');
-        $task = $this->taskRepository->find($taskId);
-
-        if ($task === null) {
+        $id = (int)$request->get('id');
+        $task = $this->taskRepository->find($id);
+        if (!$task) {
             return $this->responseFactory->notFound();
         }
 
-        $title = $request->get('title');
-        $description = $request->get('description') ?? '';
-        $priority = $request->get('priority');
-        $status = $request->get('status');
-        $createdAt = $request->get('created_at');
+        $task->title = $request->get('title') ?? $task->title;
+        $task->description = $request->get('description') ?? $task->description;
+        $task->priority = (int)$request->get('priority');
+        $task->status = (int)$request->get('status');
+        $task->progress = (int)$request->get('progress');
 
-        $errors = [];
-        if ($title === null || trim($title) === '') {
-            $errors['title'] = "Title is required.";
-            $title = null;
+        if ($request->get('created_at')) {
+            $created_at = DateTime::createFromFormat('Y-m-d', $request->get('created_at'));
+            $task->createdAt = $created_at ? $created_at->getTimestamp() : (int)date('%s');
         }
 
-        if (!is_numeric($priority) || in_array((int)$priority, range(0, 3)) === false) {
-            $errors['priority'] = "Priority must be specified.";
-            $priority = null;
+        $completedAtInput = $request->get('completed_at');
+        if ($completedAtInput) {
+            $completedAt = DateTime::createFromFormat('Y-m-d', $completedAtInput);
+            $task->completedAt = $completedAt ? $completedAt->getTimestamp() : null;
         }
 
-        if (!is_numeric($status) || in_array((int)$status, range(0, 4)) === false) {
-            $errors['status'] = "Status must be specified.";
-            $status = null;
-        }
-
-        if ($createdAt !== null) {
-            $createdAt = DateTime::createFromFormat('Y-m-d', $createdAt);
-            if ($createdAt) {
-                $createdAt = $createdAt->getTimestamp();
-            } else {
-                $createdAt = time();
-            }
-        }
-
-        $task->title = $title ?? '';
-        $task->description = $description;
-        $task->priority = (int)$priority;
-        $task->status = (int)$status;
-        $task->createdAt = (int)$createdAt;
-
-        if (!empty($errors)) {
-            return $this->responseFactory->view("tasks/edit.html.twig", ["errors" => $errors, "task" => $task]);
-        }
-
-        $task = $this->taskRepository->update($task);
-        if ($task === false) {
+        $taskUpdate = $this->taskRepository->update($task);
+        if (!$taskUpdate) {
             return $this->responseFactory->internalError();
         }
-        return $this->responseFactory->redirect('/tasks/' . $taskId);
+        return $this->responseFactory->redirect('/tasks/' . $task->id);
+    }
+
+    public function deleteConfirm(Request $request): Response
+    {
+        $id = (int)$request->get('id');
+        $task = $this->taskRepository->find($id);
+        if (!$task) {
+            return $this->responseFactory->notFound();
+        }
+        return $this->responseFactory->view('tasks/delete.html.twig', [
+            'task' => $task
+        ]);
     }
 
     public function delete(Request $request): Response
     {
-        $taskId = (int)$request->get('id');
-        $task = $this->taskRepository->find($taskId);
-
-        if ($task === null) {
+        $id = (int)$request->get('id');
+        $task = $this->taskRepository->find($id);
+        if (!$task) {
             return $this->responseFactory->notFound();
         }
-
-        $task = $this->taskRepository->delete($task);
-        if ($task === false) {
-            return $this->responseFactory->internalError();
-        }
+        $this->taskRepository->delete($task);
         return $this->responseFactory->redirect('/tasks');
     }
 }
