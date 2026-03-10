@@ -38,12 +38,27 @@ class TaskRepository implements TaskRepositoryInterface
         return $task;
     }
 
+    /**
+     * @param int $projectId
+     * @return Task[]
+     */
+    public function findProjectTasks(int $projectId): array
+    {
+        $stmt = $this->database->run("SELECT * FROM tasks WHERE project_id = :id", ["id" => $projectId])->fetchAll();
+        $tasks = [];
+        foreach ($stmt as $row) {
+            $task = $this->fromDbRow($row);
+            $tasks[] = $task;
+        }
+        return $tasks;
+    }
+
 
     public function insert(Task $task): Task|null
     {
         $stmt = $this->database->run(
-            "INSERT INTO tasks (title, description, priority, status, progress, created_at, completed_at) 
-                 VALUES (:title, :description, :priority, :status, :progress, :created_at, :completed_at)",
+            "INSERT INTO tasks (title, description, priority, status, progress, created_at, completed_at, project_id) 
+                 VALUES (:title, :description, :priority, :status, :progress, :created_at, :completed_at, :project_id)",
             [
                 "title" => $task->title,
                 "description" => $task->description,
@@ -51,7 +66,8 @@ class TaskRepository implements TaskRepositoryInterface
                 "status" => $task->status,
                 "progress" => $task->progress,
                 "created_at" => $task->createdAt,
-                "completed_at" => $task->completedAt
+                "completed_at" => $task->completedAt,
+                "project_id" => $task->projectId
             ]
         );
         if ($stmt->rowCount() === 0) {
@@ -70,7 +86,8 @@ class TaskRepository implements TaskRepositoryInterface
                 status = :status,
                 progress = :progress,
                 created_at = :created_at,
-                completed_at = :completed_at
+                completed_at = :completed_at,
+                project_id = :project_id
              WHERE id = :id",
             [
                 "id" => $task->id,
@@ -80,7 +97,8 @@ class TaskRepository implements TaskRepositoryInterface
                 "status" => $task->status,
                 "progress" => $task->progress,
                 "created_at" => $task->createdAt,
-                "completed_at" => $task->completedAt
+                "completed_at" => $task->completedAt,
+                "project_id" => $task->projectId
             ]
         );
         return $stmt->rowCount() > 0;
@@ -101,6 +119,7 @@ class TaskRepository implements TaskRepositoryInterface
         $task->progress = $row->progress;
         $task->createdAt = $row->created_at;
         $task->completedAt = $row->completed_at;
+        $task->projectId = $row->project_id;
         return $task;
     }
 

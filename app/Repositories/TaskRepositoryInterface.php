@@ -9,6 +9,8 @@ interface TaskRepositoryInterface
     /** @return Task[] */
     public function all(): array;
     public function find(int $id): ?Task;
+    /** @return Task[] */
+    public function findProjectTasks(int $projectId): array;
     public function insert(Task $task): Task|null;
     public function update(Task $task): bool;
     public function delete(Task $task): bool;

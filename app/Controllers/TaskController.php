@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Task;
+use App\Repositories\ProjectRepositoryInterface;
 use App\Repositories\TaskRepositoryInterface;
 use DateTime;
 use Framework\Request;
@@ -15,10 +16,16 @@ class TaskController
 
     private TaskRepositoryInterface $taskRepository;
 
-    public function __construct(ResponseFactory $responseFactory, TaskRepositoryInterface $taskRepository)
-    {
+    private ProjectRepositoryInterface $projectRepository;
+
+    public function __construct(
+        ResponseFactory $responseFactory,
+        TaskRepositoryInterface $taskRepository,
+        ProjectRepositoryInterface $projectRepository
+    ) {
         $this->responseFactory = $responseFactory;
         $this->taskRepository = $taskRepository;
+        $this->projectRepository = $projectRepository;
     }
 
     public function index(): Response
@@ -29,7 +36,8 @@ class TaskController
 
     public function create(): Response
     {
-        return $this->responseFactory->view("tasks/create.html.twig");
+        $projects = $this->projectRepository->all();
+        return $this->responseFactory->view('tasks/create.html.twig', ['projects' => $projects]);
     }
 
     public function store(Request $request): Response
@@ -76,6 +84,11 @@ class TaskController
             return $this->responseFactory->view("tasks/create.html.twig", ["errors" => $errors, "task" => $task]);
         }
 
+        $projectId = $request->get('project');
+        if ($projectId !== '') {
+            $task->projectId = (int)$projectId;
+        }
+
         $task = $this->taskRepository->insert($task);
         if ($task === null) {
             return $this->responseFactory->internalError();
@@ -91,7 +104,9 @@ class TaskController
         if ($task === null) {
             return $this->responseFactory->notFound();
         }
-        return $this->responseFactory->view("tasks/show.html.twig", ["task" => $task]);
+        $project = ($task->projectId) ? $this->projectRepository->find($task->projectId) : '';
+
+        return $this->responseFactory->view("tasks/show.html.twig", ["task" => $task, "project" => $project]);
     }
 
     public function edit(Request $request): Response
@@ -99,7 +114,8 @@ class TaskController
         $id = (int)$request->get('id');
         $task = $this->taskRepository->find($id);
         return $this->responseFactory->view('tasks/edit.html.twig', [
-            'task' => $task
+            'task' => $task,
+            'projects' => $this->projectRepository->all()
         ]);
     }
 
@@ -127,6 +143,7 @@ class TaskController
             $completedAt = DateTime::createFromFormat('Y-m-d', $completedAtInput);
             $task->completedAt = $completedAt ? $completedAt->getTimestamp() : null;
         }
+        $task->projectId = (int)$request->get('project');
 
         $taskUpdate = $this->taskRepository->update($task);
         if (!$taskUpdate) {

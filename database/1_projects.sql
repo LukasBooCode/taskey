@@ -4,6 +4,6 @@ CREATE TABLE projects (
     description TEXT
 );
 INSERT INTO projects (title, description) VALUES
-    ('Fellowship of the Cock-Ring', 'The Fellowship must guard the Cock-Ring closely from Sissyman'),
-    ('The Two Titties', 'Our friends gather at the Two Titties for the final buttbuddy battle'),
-    ('Return of the Cuck', 'The Cuckold returns for a final confrontation')
+      ('The Fellowship of the Ring', 'Forming the fellowship and beginning the journey to Mordor'),
+      ('The Two Towers', 'Battles, alliances and the war against Saruman'),
+      ('The Return of the King', 'The final stand against Sauron and the return of Aragorn');
