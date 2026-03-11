@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Task;
 use App\Repositories\ProjectRepositoryInterface;
+use App\Repositories\TagRepositoryInterface;
 use App\Repositories\TaskRepositoryInterface;
 use DateTime;
 use Framework\Request;
@@ -18,14 +19,18 @@ class TaskController
 
     private ProjectRepositoryInterface $projectRepository;
 
+    private TagRepositoryInterface $tagRepository;
+
     public function __construct(
         ResponseFactory $responseFactory,
         TaskRepositoryInterface $taskRepository,
-        ProjectRepositoryInterface $projectRepository
+        ProjectRepositoryInterface $projectRepository,
+        TagRepositoryInterface $tagRepository
     ) {
         $this->responseFactory = $responseFactory;
         $this->taskRepository = $taskRepository;
         $this->projectRepository = $projectRepository;
+        $this->tagRepository = $tagRepository;
     }
 
     public function index(): Response
@@ -37,7 +42,8 @@ class TaskController
     public function create(): Response
     {
         $projects = $this->projectRepository->all();
-        return $this->responseFactory->view('tasks/create.html.twig', ['projects' => $projects]);
+        $tags = $this->tagRepository->all();
+        return $this->responseFactory->view('tasks/create.html.twig', ['projects' => $projects, 'tags' => $tags]);
     }
 
     public function store(Request $request): Response
@@ -89,6 +95,18 @@ class TaskController
             $task->projectId = (int)$projectId;
         }
 
+        $tagsRequest = $request->getMany('tags');
+        $tags = [];
+        if ($tagsRequest) {
+            foreach ($tagsRequest as $tagId) {
+                $tag = $this->tagRepository->find((int)$tagId);
+                if ($tag) {
+                    $tags[] = $tag;
+                }
+            }
+        }
+        $task->tags = $tags;
+
         $task = $this->taskRepository->insert($task);
         if ($task === null) {
             return $this->responseFactory->internalError();
@@ -115,7 +133,8 @@ class TaskController
         $task = $this->taskRepository->find($id);
         return $this->responseFactory->view('tasks/edit.html.twig', [
             'task' => $task,
-            'projects' => $this->projectRepository->all()
+            'projects' => $this->projectRepository->all(),
+            'tags' => $this->tagRepository->all()
         ]);
     }
 
@@ -144,6 +163,18 @@ class TaskController
             $task->completedAt = $completedAt ? $completedAt->getTimestamp() : null;
         }
         $task->projectId = (int)$request->get('project');
+
+        $tagsRequest = $request->getMany('tags');
+        $tags = [];
+        if ($tagsRequest) {
+            foreach ($tagsRequest as $tagId) {
+                $tag = $this->tagRepository->find((int)$tagId);
+                if ($tag) {
+                    $tags[] = $tag;
+                }
+            }
+        }
+        $task->tags = $tags;
 
         $taskUpdate = $this->taskRepository->update($task);
         if (!$taskUpdate) {

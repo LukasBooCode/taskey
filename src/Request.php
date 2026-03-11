@@ -8,7 +8,7 @@ class Request
 
     public string $path;
 
-    /** @var string[] */
+    /** @var array<string|string[]> */
     public array $postParameters;
 
     /** @var string[] */
@@ -21,7 +21,7 @@ class Request
      * @param string $method
      * @param string $path
      * @param string[] $queryParameters
-     * @param string[] $postParameters
+     * @param array<string|string[]> $postParameters
      */
     public function __construct(string $method, string $path, array $queryParameters, array $postParameters)
     {
@@ -31,16 +31,38 @@ class Request
         $this->postParameters = $postParameters;
     }
 
-    public function get(string $key): ?string
+    /**
+     * @param string $key
+     * @return string|null
+     */
+    public function get(string $key): string|null
     {
         if (array_key_exists($key, $this->routeParameters)) {
             return $this->routeParameters[$key];
         }
         if (array_key_exists($key, $this->postParameters)) {
+            if (is_array($this->postParameters[$key])) {
+                return $this->postParameters[$key][0];
+            }
             return $this->postParameters[$key];
         }
         if (array_key_exists($key, $this->queryParameters)) {
             return $this->queryParameters[$key];
+        }
+        return null;
+    }
+
+    /**
+     * @param string $key
+     * @return string[]|null
+     */
+    public function getMany(string $key): ?array
+    {
+        if (array_key_exists($key, $this->postParameters)) {
+            if (is_array($this->postParameters[$key])) {
+                return $this->postParameters[$key];
+            }
+            return array($this->postParameters[$key]);
         }
         return null;
     }

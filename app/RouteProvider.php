@@ -4,6 +4,7 @@ namespace App;
 
 use App\Controllers\HomeController;
 use App\Controllers\ProjectController;
+use App\Controllers\TagController;
 use App\Controllers\TaskController;
 use Framework\Router;
 use Framework\RouteProviderInterface;
@@ -38,5 +39,14 @@ class RouteProvider implements RouteProviderInterface
         $router->addRoute('GET', '/projects/(?<id>\d+)/edit', [$projectController, 'edit']);
         $router->addRoute('POST', '/projects/(?<id>\d+)/edit', [$projectController, 'update']);
         $router->addRoute('POST', '/projects/(?<id>\d+)/delete', [$projectController, 'delete']);
+
+        $tagController = $container->get(TagController::class);
+        $router->addRoute('GET', '/tags', [$tagController, 'index']);
+        $router->addRoute('GET', '/tags/create', [$tagController, 'create']);
+        $router->addRoute('POST', '/tags', [$tagController, 'store']);
+        $router->addRoute('GET', '/tags/(?<id>\d+)', [$tagController, 'show']);
+        $router->addRoute('GET', '/tags/(?<id>\d+)/edit', [$tagController, 'edit']);
+        $router->addRoute('POST', '/tags/(?<id>\d+)/edit', [$tagController, 'update']);
+        $router->addRoute('GET', '/tags/(?<id>\d+)/delete', [$tagController, 'delete']);
     }
 }

@@ -22,6 +22,9 @@ class Task
 
     public ?int $projectId = null;
 
+    /** @var Tag[] */
+    public array $tags;
+
     public function __construct()
     {
         $this->priority = 0;

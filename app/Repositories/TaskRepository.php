@@ -9,9 +9,12 @@ class TaskRepository implements TaskRepositoryInterface
 {
     private Database $database;
 
-    public function __construct(Database $database)
+    private TagRepositoryInterface $tagRepository;
+
+    public function __construct(Database $database, TagRepositoryInterface $tagRepository)
     {
         $this->database = $database;
+        $this->tagRepository = $tagRepository;
     }
 
     /**
@@ -53,6 +56,22 @@ class TaskRepository implements TaskRepositoryInterface
         return $tasks;
     }
 
+    public function findByTag(int $tagId): array
+    {
+        $stmt = $this->database->run(
+            "SELECT * FROM tasks 
+             JOIN task_tags ON id = task_id 
+             WHERE tag_id = :tag_id",
+            ["tag_id" => $tagId]
+        )->fetchAll();
+
+        $tasks = [];
+        foreach ($stmt as $row) {
+            $task = $this->fromDbRow($row);
+            $tasks[] = $task;
+        }
+        return $tasks;
+    }
 
     public function insert(Task $task): Task|null
     {
@@ -74,6 +93,15 @@ class TaskRepository implements TaskRepositoryInterface
             return null;
         }
         $task->id = $this->database->getLastID();
+
+        $tags = $task->tags ?? [];
+        $stmt = $this->database->prepare("INSERT INTO task_tags (task_id, tag_id) VALUES (:task_id, :tag_id)");
+        foreach ($tags as $tag) {
+            $stmt->execute([
+                "task_id" => $task->id,
+                "tag_id" => $tag->id
+            ]);
+        }
         return $task;
     }
 
@@ -101,6 +129,18 @@ class TaskRepository implements TaskRepositoryInterface
                 "project_id" => $task->projectId
             ]
         );
+
+        $this->database->run("DELETE FROM task_tags WHERE task_id = :task_id", [
+            "task_id" => $task->id
+        ]);
+        $tags = $task->tags ?? [];
+        $stmt = $this->database->prepare("INSERT INTO task_tags (task_id, tag_id) VALUES (:task_id, :tag_id)");
+        foreach ($tags as $tag) {
+            $stmt->execute([
+                "task_id" => $task->id,
+                "tag_id" => $tag->id
+            ]);
+        }
         return $stmt->rowCount() > 0;
     }
 
@@ -120,6 +160,8 @@ class TaskRepository implements TaskRepositoryInterface
         $task->createdAt = $row->created_at;
         $task->completedAt = $row->completed_at;
         $task->projectId = $row->project_id;
+
+        $task->tags = $this->tagRepository->findTaskTags($task->id);
         return $task;
     }
 

@@ -24,6 +24,16 @@
             </div>
 
             <div class="row mb-3">
+                <div class="col-sm-3 fw-bold">Tags</div>
+                <div class="col-sm-9 text-break">
+                {% for tag in task.tags %}
+                    <a href="/tags/{{ tag.id }}" class="badge rounded-pill text-bg-primary text-decoration-none">{{ tag.title }}</a>
+                {% endfor %}
+
+                </div>
+            </div>
+
+            <div class="row mb-3">
                 <div class="col-sm-3 fw-bold">Priority</div>
                 <div class="col-sm-9">
                     <span class="badge bg-{{ priorityColours[task.priority] }}">{{ priorities[task.priority]|capitalize }}</span>
