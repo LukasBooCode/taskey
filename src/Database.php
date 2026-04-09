@@ -14,7 +14,7 @@ class Database
         $this->connection = new PDO("sqlite:" . $name);
         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $this->connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_OBJ);
-        $this->connection->exec('PRAGMA foreign_keys = ON;');
+        $this->connection->exec('PRAGMA foreign_keys = OFF;');
     }
 
     public function query(string $query): PDOStatement | false
