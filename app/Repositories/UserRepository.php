@@ -47,6 +47,8 @@ class UserRepository implements UserRepositoryInterface
                 'username' => $user->username,
                 'password' => $user->password
         ]);
+        $id = $this->database->getLastID();
+        $user->id = $id;
         return $user;
     }
     public function update(User $user): User
