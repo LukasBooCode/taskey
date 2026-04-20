@@ -1,4 +1,26 @@
 {% extends "users/base.twig" %}
 
 {% block content %}
+    <form method="POST" action="/login">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <strong>Login</strong>
+            </div>
+
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold"><label for="username">Username</label></div>
+                    <div class="col-sm-9"><input type="text" id="username" name="username" class="form-control"></div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-sm-3 fw-bold"><label for="password">Password</label></div>
+                    <div class="col-sm-9"><input type="password" id="password" name="password" class="form-control"></div>
+                </div>
+            </div>
+
+            <div class="card-footer d-flex gap-2">
+                <input type="submit" value="Login" class="btn btn-primary">
+            </div>
+        </div>
+    </form>
 {% endblock %}

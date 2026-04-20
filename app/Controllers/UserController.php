@@ -22,7 +22,7 @@ class UserController
         $this->userRepository = $userRepository;
         $this->authService = $authService;
     }
-    public function registerForm(Request $request): Response
+    public function registerForm(): Response
     {
         return $this->responseFactory->view('users/register.html.twig');
     }
@@ -30,7 +30,7 @@ class UserController
     {
         return $this->responseFactory->redirect('/');
     }
-    public function loginForm(Request $request): Response
+    public function loginForm(): Response
     {
         return $this->responseFactory->view('users/login.html.twig');
     }
