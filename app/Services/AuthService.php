@@ -19,10 +19,10 @@ class AuthService
         $this->userRepository->insert($user);
         return $user;
     }
-    public function login(string $username, string $password): User | false
+    public function login(string $username, string $password): User | null | false
     {
         $user = $this->userRepository->findByUsername($username);
-        $passwordHashed = $user->password;
+        $passwordHashed = $user->password ?? '';
         if (password_verify($password, $passwordHashed)) {
             return $user;
         }

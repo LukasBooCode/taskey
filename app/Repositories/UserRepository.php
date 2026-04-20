@@ -62,6 +62,13 @@ class UserRepository implements UserRepositoryInterface
         ]);
         return $user;
     }
+    public function delete(User $user): bool
+    {
+        $stmt = $this->database->run("DELETE FROM users WHERE id = :id", [
+            'id' => $user->id
+        ]);
+        return true;
+    }
     private function fromDbRow(mixed $row): User
     {
         $user = new User();

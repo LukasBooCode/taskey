@@ -12,4 +12,5 @@ interface UserRepositoryInterface
     public function findByUsername(string $username): ?User;
     public function insert(User $user): User;
     public function update(User $user): User;
+    public function delete(User $user): bool;
 }
