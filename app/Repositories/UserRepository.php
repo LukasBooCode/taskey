@@ -38,6 +38,7 @@ class UserRepository implements UserRepositoryInterface
         ])->fetch();
         $user = $this->fromDbRow($row);
         return $user;
+        //TODO Make sure that this function returns false/null, or that there is a check for false/null for the caller function if user cannot be found.
     }
     public function insert(User $user): User
     {
