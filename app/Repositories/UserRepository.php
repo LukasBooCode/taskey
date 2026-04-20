@@ -36,13 +36,15 @@ class UserRepository implements UserRepositoryInterface
         $row = $this->database->run("SELECT * FROM users WHERE username = :username", [
             'username' => $username
         ])->fetch();
+        if (!$row) {
+            return null;
+        }
         $user = $this->fromDbRow($row);
         return $user;
-        //TODO Make sure that this function returns false/null, or that there is a check for false/null for the caller function if user cannot be found.
     }
     public function insert(User $user): User
     {
-        $stmt = $this->database->run("INSERT INTO users
+        $stmt = $this->database->run("INSERT INTO users (name, username, password)
             VALUES (:name, :username, :password)", [
                 'name' => $user->name,
                 'username' => $user->username,

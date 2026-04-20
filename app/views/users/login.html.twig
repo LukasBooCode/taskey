@@ -8,6 +8,10 @@
             </div>
 
             <div class="card-body">
+                {% if errors.username %}<div>{{ errors.username }}</div>{% endif %}
+                {% if errors.password %}<div>{{ errors.password }}</div>{% endif %}
+                {% if errors.usernameNotFound %}<div>{{ errors.usernameNotFound }}</div>{% endif %}
+                {% if errors.credentials %}<div>{{ errors.credentials }}</div>{% endif %}
                 <div class="row mb-3">
                     <div class="col-sm-3 fw-bold"><label for="username">Username</label></div>
                     <div class="col-sm-9"><input type="text" id="username" name="username" class="form-control"></div>
