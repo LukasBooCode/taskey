@@ -55,5 +55,7 @@ class RouteProvider implements RouteProviderInterface
         $router->addRoute('POST', '/register', [$userController, 'register']);
         $router->addRoute('GET', '/login', [$userController, 'loginForm']);
         $router->addRoute('POST', '/login', [$userController, 'login']);
+        $router->addRoute('GET', '/logout', [$userController, 'logout']);
+        $router->addRoute('GET', '/profile', [$userController, 'profile']);
     }
 }
