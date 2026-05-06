@@ -2,6 +2,8 @@
 
 namespace Framework;
 
+use App\Middleware\AccessMiddleware;
+
 class Kernel
 {
     private Router $router;

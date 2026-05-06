@@ -16,6 +16,7 @@ class Request
 
     /** @var string[] */
     public array $routeParameters = [];
+    public Session $session;
 
     /**
      * @param string $method
@@ -29,6 +30,7 @@ class Request
         $this->path = $path;
         $this->queryParameters = $queryParameters;
         $this->postParameters = $postParameters;
+        $this->session = new Session();
     }
 
     /**

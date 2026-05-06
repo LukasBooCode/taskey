@@ -8,6 +8,7 @@ use App\Controllers\TagController;
 use App\Controllers\TaskController;
 use App\Controllers\UserController;
 use App\Middleware\AccessMiddleware;
+use App\Middleware\AuthMiddleware;
 use Framework\Router;
 use Framework\RouteProviderInterface;
 use Framework\ServiceContainer;
@@ -20,6 +21,7 @@ class RouteProvider implements RouteProviderInterface
     public function register(Router $router, ServiceContainer $container): void
     {
         $accessMiddleware = $container->get(AccessMiddleware::class);
+        $authMiddleware = $container->get(AuthMiddleware::class);
 
         $homeController = $container->get(HomeController::class);
         $router->addRoute('GET', '/', [$homeController, "index"]);
@@ -42,7 +44,9 @@ class RouteProvider implements RouteProviderInterface
         $router->addRoute('GET', '/projects/create', [$projectController, 'create']);
         $router->addRoute('POST', '/projects', [$projectController, 'store']);
         $router->addRoute('GET', '/projects/(?<id>\d+)', [$projectController, 'show']);
-        $router->addRoute('GET', '/projects/(?<id>\d+)/edit', [$projectController, 'edit']);
+        $router->addRoute('GET', '/projects/(?<id>\d+)/edit', [$projectController, 'edit'])->addMiddleware(
+            [$authMiddleware, "requireAccount"]
+        );
         $router->addRoute('POST', '/projects/(?<id>\d+)/edit', [$projectController, 'update']);
         $router->addRoute('POST', '/projects/(?<id>\d+)/delete', [$projectController, 'delete']);
 

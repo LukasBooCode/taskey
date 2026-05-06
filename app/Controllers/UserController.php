@@ -9,7 +9,8 @@ use Framework\Request;
 use Framework\Response;
 use Framework\ResponseFactory;
 
-class UserController
+class
+UserController
 {
     private ResponseFactory $responseFactory;
     private UserRepositoryInterface $userRepository;
@@ -120,7 +121,7 @@ class UserController
             $username &&
             $password &&
             $user &&
-            !$this->authService->login($username, $password)
+            !$this->authService->login($username, $password, $request->session)
         ) {
             $errors['credentials'] = 'Invalid credentials. Either username or password is incorrect.';
         }

@@ -8,6 +8,7 @@ use App\Controllers\TagController;
 use App\Controllers\TaskController;
 use App\Controllers\UserController;
 use App\Middleware\AccessMiddleware;
+use App\Middleware\AuthMiddleware;
 use App\Repositories\ProjectRepository;
 use App\Repositories\ProjectRepositoryInterface;
 use App\Repositories\TagRepository;
@@ -64,5 +65,8 @@ class ServiceProvider implements ServiceProviderInterface
 
         $accessMiddleware = new AccessMiddleware();
         $container->set(AccessMiddleware::class, $accessMiddleware);
+
+        $authMiddleware = new AuthMiddleware();
+        $container->set(AuthMiddleWare::class, $authMiddleware);
     }
 }
