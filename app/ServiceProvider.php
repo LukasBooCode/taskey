@@ -7,6 +7,7 @@ use App\Controllers\ProjectController;
 use App\Controllers\TagController;
 use App\Controllers\TaskController;
 use App\Controllers\UserController;
+use App\Middleware\AccessMiddleware;
 use App\Repositories\ProjectRepository;
 use App\Repositories\ProjectRepositoryInterface;
 use App\Repositories\TagRepository;
@@ -60,5 +61,8 @@ class ServiceProvider implements ServiceProviderInterface
 
         $userController = new UserController($responseFactory, $userRepository, $authService);
         $container->set(UserController::class, $userController);
+
+        $accessMiddleware = new AccessMiddleware();
+        $container->set(AccessMiddleware::class, $accessMiddleware);
     }
 }

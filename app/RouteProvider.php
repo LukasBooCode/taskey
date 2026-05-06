@@ -7,6 +7,7 @@ use App\Controllers\ProjectController;
 use App\Controllers\TagController;
 use App\Controllers\TaskController;
 use App\Controllers\UserController;
+use App\Middleware\AccessMiddleware;
 use Framework\Router;
 use Framework\RouteProviderInterface;
 use Framework\ServiceContainer;
@@ -18,9 +19,13 @@ class RouteProvider implements RouteProviderInterface
      */
     public function register(Router $router, ServiceContainer $container): void
     {
+        $accessMiddleware = $container->get(AccessMiddleware::class);
+
         $homeController = $container->get(HomeController::class);
         $router->addRoute('GET', '/', [$homeController, "index"]);
-        $router->addRoute('GET', '/about', [$homeController, "about"]);
+        $router->addRoute('GET', '/about', [$homeController, "about"])->addMiddleware(
+            [$accessMiddleware, "handle"]
+        );
 
         $taskController = $container->get(TaskController::class);
         $router->addRoute('GET', '/tasks', [$taskController, "index"]);
